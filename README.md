@@ -49,7 +49,8 @@ python scripts/generate_order_oligos.py
 This writes:
 
 ```text
-results/final_oligos_to_order.csv
+results/final_TSO_oligos_to_order.csv
+results/final_FWD_PCR_primers_to_order.csv
 ```
 
 The script uses only the Python standard library.

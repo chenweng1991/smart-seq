@@ -23,44 +23,25 @@ TSO_SUFFIX = "NNNNNNNNrGrGrG"
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Generate final TSO/FWD oligos to order.")
     parser.add_argument(
-        "--output",
+        "--tso-output",
         type=Path,
-        default=Path("results/final_oligos_to_order.csv"),
+        default=Path("results/final_TSO_oligos_to_order.csv"),
+    )
+    parser.add_argument(
+        "--fwd-output",
+        type=Path,
+        default=Path("results/final_FWD_PCR_primers_to_order.csv"),
     )
     return parser.parse_args()
 
 
-def main() -> int:
-    args = parse_args()
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-
-    rows = []
-    for tag_name, tag in TAGS.items():
-        rows.append(
-            {
-                "name": f"{tag_name}_TSO",
-                "type": "TSO",
-                "tag_name": tag_name,
-                "tag_sequence": tag,
-                "oligo_sequence": f"{TSO_PREFIX_TO_ORDER}{tag}{TSO_SUFFIX}",
-            }
-        )
-        rows.append(
-            {
-                "name": f"{tag_name}_FWD_PCR",
-                "type": "FWD_PCR",
-                "tag_name": tag_name,
-                "tag_sequence": tag,
-                "oligo_sequence": f"{FWD_PREFIX}{tag}",
-            }
-        )
-
-    with args.output.open("w", newline="") as handle:
+def write_csv(rows: list[dict[str, str]], output: Path) -> None:
+    output.parent.mkdir(parents=True, exist_ok=True)
+    with output.open("w", newline="") as handle:
         writer = csv.DictWriter(
             handle,
             fieldnames=[
                 "name",
-                "type",
                 "tag_name",
                 "tag_sequence",
                 "oligo_sequence",
@@ -69,8 +50,38 @@ def main() -> int:
         writer.writeheader()
         writer.writerows(rows)
 
-    print(f"Wrote: {args.output}")
-    for row in rows:
+
+def main() -> int:
+    args = parse_args()
+
+    tso_rows = []
+    fwd_rows = []
+    for tag_name, tag in TAGS.items():
+        tso_rows.append(
+            {
+                "name": f"{tag_name}_TSO",
+                "tag_name": tag_name,
+                "tag_sequence": tag,
+                "oligo_sequence": f"{TSO_PREFIX_TO_ORDER}{tag}{TSO_SUFFIX}",
+            }
+        )
+        fwd_rows.append(
+            {
+                "name": f"{tag_name}_FWD_PCR",
+                "tag_name": tag_name,
+                "tag_sequence": tag,
+                "oligo_sequence": f"{FWD_PREFIX}{tag}",
+            }
+        )
+
+    write_csv(tso_rows, args.tso_output)
+    write_csv(fwd_rows, args.fwd_output)
+
+    print(f"Wrote: {args.tso_output}")
+    for row in tso_rows:
+        print(f"{row['name']}\t{row['oligo_sequence']}")
+    print(f"\nWrote: {args.fwd_output}")
+    for row in fwd_rows:
         print(f"{row['name']}\t{row['oligo_sequence']}")
     return 0
 
