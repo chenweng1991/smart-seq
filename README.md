@@ -20,10 +20,14 @@ Smartseq3_N8_TSO | IDT | RNase-Free HPLC | 100 uM | /5Biosg/AGAGACAGATTGCGCAATGN
 
 The fixed `AGAGACAGATTGCGCAATG` segment creates low sequence diversity early in the read. The design goal is to improve sequencing diversity while preserving the required TSO / UMI function and keeping PCR simple.
 
+This redesign now also adopts the Smart-seq3xpress-style `WW` spacer between the
+`N8` UMI and terminal `rGrGrG`, so the tag replacement is combined with the
+improved TSO junction rather than the original `N8-rGrGrG` junction.
+
 Relevant sequence relationship:
 
 ```text
-                         AGAGACAGATTGCGCAATGNNNNNNNNrGrGrG          (TSO)
+                         AGAGACAGATTGCGCAATGNNNNNNNNWWrGrGrG        (TSO)
 TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGATTGCGCAATG               (FWD PCR primer)
 TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG        (Nextera Tn5 adapter Read 1 sequencing primer)
 ```
@@ -76,16 +80,16 @@ TSO oligos:
 
 ```text
 original_TSO
-AGAGACAGATTGCGCAATGNNNNNNNNrGrGrG
+AGAGACAGATTGCGCAATGNNNNNNNNWWrGrGrG
 
 tag_01_TSO
-AGAGACAGGAATGCGGCCANNNNNNNNrGrGrG
+AGAGACAGGAATGCGGCCANNNNNNNNWWrGrGrG
 
 tag_02_TSO
-AGAGACAGCGCATTATGACNNNNNNNNrGrGrG
+AGAGACAGCGCATTATGACNNNNNNNNWWrGrGrG
 
 tag_03_TSO
-AGAGACAGTCGCAATCTGTNNNNNNNNrGrGrG
+AGAGACAGTCGCAATCTGTNNNNNNNNWWrGrGrG
 ```
 
 FWD PCR primers:
@@ -103,6 +107,10 @@ TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGCGCATTATGAC
 tag_03_FWD_PCR
 TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGTCGCAATCTGT
 ```
+
+The matched forward PCR primers stay the same length and composition except for
+the 11 bp tag itself, because the added `WW` spacer sits downstream of the PCR
+primer annealing site and only changes the RT TSO.
 
 ## Exact Filters Added In The Script
 
