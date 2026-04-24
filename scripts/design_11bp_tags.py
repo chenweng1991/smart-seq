@@ -22,7 +22,9 @@ from pathlib import Path
 
 
 BASES = "ACGT"
-TSO_PREFIX = "TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG"
+TSO_PREFIX = "AGAGACAG"
+FWD_PREFIX = "TCGTCGGCAGCGTCAGATGTGTATAAGAGACAG"
+TSO_SUFFIX = "NNNNNNNNWWrGrGrG"
 REVERSE_PCR_PRIMER = "ACGAGCATCAGCAGCATACGA"
 NEXTERA_READ2_PARTIAL = "CTGTCTCTTATACACATCTCCGAGCCCACGAGAC"
 
@@ -82,6 +84,7 @@ def longest_complement_run(left: str, right: str) -> int:
 def worst_primer_adapter_complement(seq: str) -> tuple[int, str]:
     checks = {
         "reverse_pcr_primer": REVERSE_PCR_PRIMER,
+        "forward_pcr_prefix": FWD_PREFIX,
         "tso_prefix": TSO_PREFIX,
         "nextera_read2_partial": NEXTERA_READ2_PARTIAL,
     }
@@ -375,8 +378,8 @@ def write_csv(tags: list[Tag], output: Path) -> None:
                     "max_self_complement": tag.max_self_complement,
                     "max_primer_adapter_complement": tag.max_primer_adapter_complement,
                     "worst_primer_adapter_match": tag.worst_primer_adapter_match,
-                    "tso_oligo": f"{TSO_PREFIX}{tag.sequence}NNNNNNNNrGrGrG",
-                    "forward_pcr_primer": f"{TSO_PREFIX}{tag.sequence}",
+                    "tso_oligo": f"{TSO_PREFIX}{tag.sequence}{TSO_SUFFIX}",
+                    "forward_pcr_primer": f"{FWD_PREFIX}{tag.sequence}",
                 }
             )
 

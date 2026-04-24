@@ -12,13 +12,14 @@ primer:
 ## RT TSO
 
 Order the TSO with the fixed 11-mer followed by the random 8 nt UMI/randomer
-and terminal template-switching riboguanosines:
+then the Smart-seq3xpress-style `WW` spacer and terminal template-switching
+riboguanosines:
 
-`TCGTCGGCAGCGTCAGATGTGTATAAGAGACAGATTGCGCAATGNNNNNNNNrGrGrG`
+`/5Biosg/AGAGACAGATTGCGCAATGNNNNNNNNWWrGrGrG`
 
 Structure:
 
-`Nextera Read 1 partial adapter - fixed 11-mer - N8 - rGrGrG`
+`TSO fixed prefix - fixed 11-mer - N8 - WW - rGrGrG`
 
 ## PCR primers after RT
 
@@ -57,6 +58,8 @@ P7 strand:
 - The fixed 11-mer has balanced composition: 5 A/T and 6 G/C bases.
 - It avoids long homopolymers and directly matches the forward PCR primer
   annealing sequence.
+- The `WW` spacer preserves the Smart-seq3xpress improved junction between the
+  UMI and the template-switching `rGrGrG`.
 - Keep the `N8` bases random during synthesis if they are intended as a UMI or
   molecular randomer.
 
